@@ -5,7 +5,7 @@ Windows Portable Device file transfer
 
 I first want to give Christophe Geer a really big hand. He is the only person that I have found that had any example of transfering data to a phone using WPD (Windows Portable device) in c#.
 
-There were only a few bugs that I had to fix and only a few importnat features that were missing that I added,
+There were only a few bugs that I had to fix and only a few important features that were missing that I added,
 such as copying folders and determining remote file size to display copy progress.
 
 The result are a set of PortableDevice files that can be used to do most of the needed CRUD operations.
