@@ -28,15 +28,15 @@ See the top of that file for instructions.
 
 The files that you may want to use in your project to copy to/from a phone are:
 
-   PortableDevice.cs
+     PortableDevice.cs
    
-   PortableDeviceCollection.cs
+     PortableDeviceCollection.cs
    
-   PortableDeviceFile.cs
+     PortableDeviceFile.cs
    
-   PortableDeviceFolder.cs
+     PortableDeviceFolder.cs
 
-   PortableDeviceObject.cs
+     PortableDeviceObject.cs
 
    Enjoy!
 
