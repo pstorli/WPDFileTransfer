@@ -10,18 +10,6 @@ such as copying folders and determining remote file size to display copy progres
 
 The result are a set of PortableDevice files that can be used to do most of the needed CRUD operations.
 
-I modified the PortableDevice files in the last series, but they can also be put into any of his other WPD articles. https://github.com/geersch/WPD <- github site to download the whole tutorial series.
-
-https://cgeers.wordpress.com/2011/05/22/enumerating-windows-portable-devices/
-
-https://cgeers.wordpress.com/2011/06/05/wpd-enumerating-content/
-
-https://cgeers.wordpress.com/2011/08/13/wpd-transferring-content/
-
-https://cgeers.wordpress.com/2012/04/15/wpd-deleting-resources/
-
-https://cgeers.wordpress.com/2012/04/17/wpd-transfer-content-to-a-device/
-
 The file Program.cs does a simple task of either copying a folder to/from the phone from your pc
 or  copying a file to/from the phone from your pc.
 
@@ -39,6 +27,18 @@ The files that you may want to use in your project to copy to/from a phone are:
 
      PortableDeviceObject.cs
 
-   Enjoy!
+I modified the PortableDevice files in the last series, but they can also be put into any of his other WPD articles. https://github.com/geersch/WPD <- github site to download the whole tutorial series.
 
-   :) Pete
+https://cgeers.wordpress.com/2011/05/22/enumerating-windows-portable-devices/
+
+https://cgeers.wordpress.com/2011/06/05/wpd-enumerating-content/
+
+https://cgeers.wordpress.com/2011/08/13/wpd-transferring-content/
+
+https://cgeers.wordpress.com/2012/04/15/wpd-deleting-resources/
+
+https://cgeers.wordpress.com/2012/04/17/wpd-transfer-content-to-a-device/
+
+Enjoy!
+
+:) Pete
