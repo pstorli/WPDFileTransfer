@@ -1,5 +1,5 @@
 # WPDFileTransfer
-Copy files to/from your pc/phone using c#
+Copy files/folders to/from your pc/phone using c#
 
 Windows Portable Device file transfer
 
