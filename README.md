@@ -26,7 +26,7 @@ or  copying a file to/from the phone from your pc.
 
 See the top of that file for instructions.
 
-The fils that you may want to use in your project to copy to/from a phone are:
+The files that you may want to use in your project to copy to/from a phone are:
 
    PortableDevice.cs
    PortableDeviceCollection.cs
