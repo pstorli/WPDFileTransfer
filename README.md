@@ -30,18 +30,20 @@ The files that you may want to use in your project to copy to/from a phone are:
 I modified the PortableDevice files in the last series, but they can also be put into any of his other WPD articles.   
 
   // github site to download the whole tutorial series.
-  https://github.com/geersch/WPD
+  
+    https://github.com/geersch/WPD
   
   // These are the links for each tutorial, which are really detailed and good!
-  https://cgeers.wordpress.com/2011/05/22/enumerating-windows-portable-devices/
+  
+    https://cgeers.wordpress.com/2011/05/22/enumerating-windows-portable-devices/
 
-  https://cgeers.wordpress.com/2011/06/05/wpd-enumerating-content/
+    https://cgeers.wordpress.com/2011/06/05/wpd-enumerating-content/
 
-  https://cgeers.wordpress.com/2011/08/13/wpd-transferring-content/
+    https://cgeers.wordpress.com/2011/08/13/wpd-transferring-content/
 
-  https://cgeers.wordpress.com/2012/04/15/wpd-deleting-resources/
+    https://cgeers.wordpress.com/2012/04/15/wpd-deleting-resources/
 
-  https://cgeers.wordpress.com/2012/04/17/wpd-transfer-content-to-a-device/
+    https://cgeers.wordpress.com/2012/04/17/wpd-transfer-content-to-a-device/
 
 Enjoy!
 
