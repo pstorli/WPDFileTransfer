@@ -24,7 +24,7 @@ https://cgeers.wordpress.com/2012/04/17/wpd-transfer-content-to-a-device/
 The file Program.cs does a simple task of either copying a folder to/from the phone from your pc
 or  copying a file to/from the phone from your pc.
 
-See the top of theat file for instructions.
+See the top of that file for instructions.
 
 The fils that you may want to use in your project to copy to/from a phone are:
 
