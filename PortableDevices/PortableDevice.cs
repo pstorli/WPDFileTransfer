@@ -90,23 +90,26 @@ namespace PortableDevices
         }
 
         /**
-         * The root folder on the device, also enumerate all files and folers on device.
+         * The root folder on the device, also enumerate all files and folders on device.
          */
-        public PortableDeviceFolder Root()
+        public PortableDeviceFolder Root
         {
-            PortableDeviceFolder root = new PortableDeviceFolder("DEVICE", "DEVICE");
+            get
+            {
+                PortableDeviceFolder root = new PortableDeviceFolder("DEVICE", "DEVICE");
 
-            IPortableDeviceContent content = getContents();
+                //IPortableDeviceContent content = getContents();
 
-            EnumerateContents(ref content, root);
+                //EnumerateContents(ref content, root);
 
-            return root;
+                return root;
+            }
         }
 
         /**
          * Enumerate the contents of the device.
          */
-        private static void EnumerateContents (ref IPortableDeviceContent content, PortableDeviceFolder parent)
+        internal static void EnumerateContents (ref IPortableDeviceContent content, PortableDeviceFolder parent)
         {
             // Get the properties of the object
             IPortableDeviceProperties properties;
@@ -128,10 +131,10 @@ namespace PortableDevices
 
                     parent.Files.Add (currentObject);
 
-                    if (currentObject is PortableDeviceFolder)
-                    {
-                        EnumerateContents (ref content, (PortableDeviceFolder)currentObject);
-                    }                    
+                    //if (currentObject is PortableDeviceFolder)
+                    //{
+                    //    EnumerateContents (ref content, (PortableDeviceFolder)currentObject);
+                    //}                    
                 }
             } while (fetched > 0);
         }
@@ -202,11 +205,18 @@ namespace PortableDevices
             properties.GetValues(objectId, keys, out values);
 
             // Get the name of the object
-            string name;
+            string name = string.Empty;
             var property = new _tagpropertykey();
             property.fmtid = new Guid(0xEF6B490D, 0x5CD8, 0x437A, 0xAF, 0xFC, 0xDA, 0x8B, 0x60, 0xEE, 0x4A, 0x3C);
-            property.pid = 4;
-            values.GetStringValue(property, out name);
+            property.pid = 12;
+            try { values.GetStringValue(property, out name); }
+            catch(Exception) 
+            {
+                property.pid = 4;
+                try { values.GetStringValue(property, out name); }
+                catch (Exception) { name = "Unknown"; }
+            }
+            
 
             // Get the type of the object
             Guid contentType;
@@ -299,7 +309,7 @@ namespace PortableDevices
 
                 Console.WriteLine(FriendlyName);
 
-                var folder = Root();
+                var folder = Root;
                 foreach (var item in folder.Files)
                 {
                     item.DisplayObject();
