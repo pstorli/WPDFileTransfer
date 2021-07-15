@@ -20,8 +20,10 @@ namespace PortableDevices
                 this._deviceManager.RefreshDeviceList();
 
                 // Determine how many WPD devices are connected
-                var deviceIds = new string[100];
+                string[] deviceIds = new string[1];
                 uint count = 1;
+                // the method should take null and 0 the first time to get the number of devices - this does not work 
+                // https://docs.microsoft.com/windows/win32/api/portabledeviceapi/nf-portabledeviceapi-iportabledevicemanager-getdevices
                 this._deviceManager.GetDevices(ref deviceIds[0], ref count);
 
                 // Retrieve the device id for each connected device
