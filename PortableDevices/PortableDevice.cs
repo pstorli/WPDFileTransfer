@@ -13,7 +13,7 @@ namespace PortableDevices
     public class PortableDevice
     {        
         public bool _isConnected;
-        public readonly PortableDeviceClass _device = new PortableDeviceClass();
+        public readonly IPortableDevice _device = new PortableDeviceApiLib.PortableDevice();
         public static string IS_PHONE_PLUGGED_IN = "Ensure that your Phone is plugged into this PC's usb port.";
 
         /**
@@ -29,7 +29,7 @@ namespace PortableDevices
          */
         public string DeviceId { get; set; }
         
-        internal PortableDeviceClass PortableDeviceClass
+        internal IPortableDevice PortableDeviceClass
         {
             get
             {
@@ -44,7 +44,7 @@ namespace PortableDevices
         {
             if (this._isConnected) { return; }
 
-            var clientInfo = (IPortableDeviceValues)new PortableDeviceValuesClass();
+            var clientInfo = (IPortableDeviceValues)new PortableDeviceTypesLib.PortableDeviceValues();
             this._device.Open (this.DeviceId, clientInfo);
             this._isConnected = true;
         }
@@ -181,7 +181,7 @@ namespace PortableDevices
         {
             PortableDeviceApiLib.IPortableDeviceValues pValues =
                 (PortableDeviceApiLib.IPortableDeviceValues)
-                    new PortableDeviceTypesLib.PortableDeviceValuesClass();
+                    new PortableDeviceTypesLib.PortableDeviceValues();
 
             var WPD_OBJECT_ID = new _tagpropertykey();
             WPD_OBJECT_ID.fmtid =
@@ -373,7 +373,7 @@ namespace PortableDevices
                 // make sure that we are not holding on to a file.
                 DisconnectConnect();
 
-                // Make sure that the target dir exists.
+                // Make sure that the target directory exists.
                 System.IO.Directory.CreateDirectory(saveToPath);
 
                 IPortableDeviceContent content = getContents();
@@ -395,7 +395,7 @@ namespace PortableDevices
                 // var fileName = Path.GetFileName(file.Id);
                 targetStream = new FileStream(Path.Combine(saveToPath, fileName), FileMode.Create, FileAccess.Write);
 
-                // Getthe total size.
+                // Get the total size.
                 long length = file.size;
                 long written = 0;
                 long lPCt = 0;
@@ -431,7 +431,7 @@ namespace PortableDevices
         }
 
         /**
-         * Copy To Phone
+         * Copy To portable device
          */
         public void TransferContentToDevice (PortableDeviceFolder parentFolder, string filePath)
         {

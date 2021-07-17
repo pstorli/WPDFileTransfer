@@ -27,14 +27,11 @@ namespace PortableDevices
         static void Main()
         {
             String  error       = "";
+            PortableDeviceCollection devices = null;
             try
             {
-                var devices = new PortableDeviceCollection();
-                if (null == devices)
-                {
-                    error = "No devices found!";
-                }
-                else
+                devices = new PortableDeviceCollection();
+                if (null != devices)
                 {
                     devices.Refresh();
                     foreach(var device in devices)
@@ -76,6 +73,10 @@ namespace PortableDevices
             }
             finally
             {
+                if (null != devices)
+                {
+                    devices.Dispose();
+                }
                 Console.WriteLine(error);
             }
         }
@@ -102,7 +103,7 @@ namespace PortableDevices
 
             try
             {
-                // Try to find the data dir on the phone.
+                // Try to find the data folder on the phone.
                 String               phoneDir = @"Phone\Android\data";
                 PortableDeviceFolder root     = device.Root;
                 PortableDeviceFolder result   = root.FindDir (phoneDir);
@@ -120,7 +121,7 @@ namespace PortableDevices
                 }
                 else
                 {
-                    // Create remote test dir.
+                    // Create remote test folder.
                     result = result.CreateDir (device, "test");
 
                     string pcDir = @"C:\Test\";

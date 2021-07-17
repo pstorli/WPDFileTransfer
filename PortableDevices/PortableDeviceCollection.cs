@@ -1,17 +1,27 @@
 ﻿using System;
 using System.Collections.ObjectModel;
+using System.Runtime.InteropServices;
 using PortableDeviceApiLib;
 
 // Portable Device Collection
 namespace PortableDevices
 {
-    public class PortableDeviceCollection : Collection<PortableDevice>
+    public class PortableDeviceCollection : Collection<PortableDevice>, IDisposable
     {
-        private readonly PortableDeviceManager _deviceManager;
+        
+        private readonly IPortableDeviceManager _deviceManager;
 
         public PortableDeviceCollection()
         {
-            this._deviceManager = new PortableDeviceManager();
+            this._deviceManager = Activator.CreateInstance(typeof(CLSID_PortableDeviceManager)) as IPortableDeviceManager;
+        }
+
+        public void Dispose()
+        {
+            if (null != _deviceManager)
+            {
+                Marshal.ReleaseComObject(_deviceManager);
+            }
         }
 
         public void Refresh()
@@ -20,18 +30,26 @@ namespace PortableDevices
                 this._deviceManager.RefreshDeviceList();
 
                 // Determine how many WPD devices are connected
-                string[] deviceIds = new string[1];
-                uint count = 1;
-                // the method should take null and 0 the first time to get the number of devices - this does not work 
+                uint count = 0;
+                // the method should take null and 0 the first time to get the number of devices 
                 // https://docs.microsoft.com/windows/win32/api/portabledeviceapi/nf-portabledeviceapi-iportabledevicemanager-getdevices
-                this._deviceManager.GetDevices(ref deviceIds[0], ref count);
+                this._deviceManager.GetDevices(null, ref count);
 
                 // Retrieve the device id for each connected device
-                deviceIds = new string[count];
-                this._deviceManager.GetDevices(ref deviceIds[0], ref count);
-                foreach (var deviceId in deviceIds)
+                IntPtr[] ptr = new IntPtr[count];
+                this._deviceManager.GetDevices(ptr, ref count);
+
+                for (uint i = 0; i < count; i++)
                 {
-                    Add (new PortableDevice(deviceId));
+                    string str = Marshal.PtrToStringUni(ptr[i]);
+                    Add(new PortableDevice(str));
+                }
+                if (ptr != null)
+                {
+                    for (uint i = 0; i < count; i++)
+                    {
+                        Marshal.FreeCoTaskMem(ptr[i]);
+                    }
                 }
             }
             catch (Exception ex)
