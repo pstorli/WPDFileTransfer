@@ -74,7 +74,7 @@ namespace PortableDevices
         [PreserveSig]
         uint GetDeviceManufacturer(
             [In] string pszPnPDeviceID,
-            [In, Out] ref StringBuilder pDeviceManufacturer,
+            [In, Out][MarshalAs(UnmanagedType.LPArray)] char[] pDeviceManufacturer,
             [In, Out] ref uint pcchDeviceManufacturer);
 
         [PreserveSig]

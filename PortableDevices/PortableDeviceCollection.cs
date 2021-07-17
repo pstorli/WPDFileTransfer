@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
+using System.Text;
 using PortableDeviceApiLib;
 
 // Portable Device Collection
@@ -42,6 +43,15 @@ namespace PortableDevices
                 for (uint i = 0; i < count; i++)
                 {
                     string str = Marshal.PtrToStringUni(ptr[i]);
+                    char[] manufacturer = null;
+                    uint manufactureLength = 0;
+                    _deviceManager.GetDeviceManufacturer(str, manufacturer, ref manufactureLength);
+                    if (0 < manufactureLength)
+                    {
+                        manufacturer = new char[manufactureLength];
+                        _deviceManager.GetDeviceManufacturer(str, manufacturer, ref manufactureLength);
+                        Console.WriteLine($"Manufactured by {new string(manufacturer)}");
+                    }
                     Add(new PortableDevice(str));
                 }
                 if (ptr != null)

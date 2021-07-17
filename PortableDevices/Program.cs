@@ -36,7 +36,7 @@ namespace PortableDevices
                     devices.Refresh();
                     foreach(var device in devices)
                     {
-                        Console.WriteLine($"Found Device {device.FriendlyName}");
+                        Console.WriteLine($"Found Device {device.FriendlyName} with ID {device.DeviceId}");
 
                         var rootfolder = device.Root;
 
@@ -44,8 +44,7 @@ namespace PortableDevices
 
                         IPortableDeviceContent content = device.getContents();
 
-                        //EnumerateContents(ref content, root);
-                        GetFiles(ref content, rootfolder);
+                        //GetFiles(ref content, rootfolder);
 
 
                         // Copy folder to device from pc.
