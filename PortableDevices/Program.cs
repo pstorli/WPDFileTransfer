@@ -79,6 +79,8 @@ namespace PortableDevices
                 }
                 Console.WriteLine(error);
             }
+            Console.WriteLine("Press a key to exit");
+            Console.ReadKey();
         }
 
         private static void GetFiles(ref IPortableDeviceContent content, PortableDeviceFolder folder)

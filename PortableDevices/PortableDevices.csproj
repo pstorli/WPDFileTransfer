@@ -39,7 +39,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="PortabelDeviceManagerWrapper.cs" />
+    <Compile Include="PortableDevices\PortabelDeviceManager.cs" />
     <Compile Include="PortableDevice.cs" />
     <Compile Include="PortableDeviceCollection.cs" />
     <Compile Include="PortableDeviceFile.cs" />

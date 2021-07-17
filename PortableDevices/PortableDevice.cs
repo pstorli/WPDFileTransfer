@@ -15,7 +15,7 @@ namespace PortableDevices
         public bool _isConnected;
         public readonly IPortableDevice _device = new PortableDeviceApiLib.PortableDevice();
         public static string IS_PHONE_PLUGGED_IN = "Ensure that your Phone is plugged into this PC's usb port.";
-
+        PortableDeviceFolder _root = null;
         /**
          * Constructor.
          */
@@ -46,6 +46,7 @@ namespace PortableDevices
 
             var clientInfo = (IPortableDeviceValues)new PortableDeviceTypesLib.PortableDeviceValues();
             this._device.Open (this.DeviceId, clientInfo);
+            _root = new PortableDeviceFolder("DEVICE", "DEVICE");
             this._isConnected = true;
         }
 
@@ -96,13 +97,7 @@ namespace PortableDevices
         {
             get
             {
-                PortableDeviceFolder root = new PortableDeviceFolder("DEVICE", "DEVICE");
-
-                //IPortableDeviceContent content = getContents();
-
-                //EnumerateContents(ref content, root);
-
-                return root;
+                return _root;
             }
         }
 
@@ -130,11 +125,6 @@ namespace PortableDevices
                     var currentObject = WrapObject (properties, objectId);
 
                     parent.Files.Add (currentObject);
-
-                    //if (currentObject is PortableDeviceFolder)
-                    //{
-                    //    EnumerateContents (ref content, (PortableDeviceFolder)currentObject);
-                    //}                    
                 }
             } while (fetched > 0);
         }
