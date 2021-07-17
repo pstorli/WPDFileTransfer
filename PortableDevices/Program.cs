@@ -85,7 +85,7 @@ namespace PortableDevices
 
         private static void GetFiles(ref IPortableDeviceContent content, PortableDeviceFolder folder)
         {
-            PortableDevice.EnumerateContents(ref content, folder);
+            PortableDeviceFolder.EnumerateContents(ref content, folder);
             foreach (var fileItem in folder.Files)
             {
                 Console.WriteLine($"\t {fileItem.Name}");
