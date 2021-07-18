@@ -19,16 +19,22 @@ namespace PortableDevices
         /**
          * Constructor.
          */
-        public PortableDevice (string deviceId)
+        public PortableDevice (string deviceId, string name, string manufacturer, string description)
         {
             this.DeviceId = deviceId;
+            this.Name = name;
+            this.Manufacturer = manufacturer;
+            this.Description = description;
         }
 
         /**
          * Device Id
          */
-        public string DeviceId { get; set; }
-        
+        public string DeviceId { get; private set; }
+        public string Name { get; private set; }
+        public string Manufacturer { get; private set; }
+        public string Description { get; private set; }
+
         internal IPortableDevice PortableDeviceClass
         {
             get

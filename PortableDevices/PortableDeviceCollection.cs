@@ -25,6 +25,25 @@ namespace PortableDevices
             }
         }
 
+        delegate uint FieldGetter(string deviceId, char[] field, ref uint length);
+        private string GetFieldValue(FieldGetter fieldGetter, string deviceId)
+        {
+            string result = null;
+
+            char[] charField = null;
+            uint fieldLength = 0;
+
+            fieldGetter(deviceId, charField, ref fieldLength);
+            if (0 < fieldLength)
+            {
+                charField = new char[fieldLength];
+                fieldGetter(deviceId, charField, ref fieldLength);
+                result = new string(charField);
+            }
+
+            return result;
+        }
+
         public void Refresh()
         {
             try { 
@@ -42,17 +61,12 @@ namespace PortableDevices
 
                 for (uint i = 0; i < count; i++)
                 {
-                    string str = Marshal.PtrToStringUni(ptr[i]);
-                    char[] manufacturer = null;
-                    uint manufactureLength = 0;
-                    _deviceManager.GetDeviceManufacturer(str, manufacturer, ref manufactureLength);
-                    if (0 < manufactureLength)
-                    {
-                        manufacturer = new char[manufactureLength];
-                        _deviceManager.GetDeviceManufacturer(str, manufacturer, ref manufactureLength);
-                        Console.WriteLine($"Manufactured by {new string(manufacturer)}");
-                    }
-                    Add(new PortableDevice(str));
+                    string deviceId = Marshal.PtrToStringUni(ptr[i]);
+                    string manufacturer = GetFieldValue(_deviceManager.GetDeviceManufacturer, deviceId);
+                    string description = GetFieldValue(_deviceManager.GetDeviceDescription, deviceId);
+                    string friendlyname = GetFieldValue(_deviceManager.GetDeviceFriendlyName, deviceId);
+
+                    Add(new PortableDevice(deviceId, friendlyname, manufacturer, description));
                 }
                 if (ptr != null)
                 {

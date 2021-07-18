@@ -62,13 +62,13 @@ namespace PortableDevices
         [PreserveSig]
         uint GetDeviceFriendlyName(
             [In] string pszPnPDeviceID,
-            [In, Out] ref StringBuilder pDeviceFriendlyName,
+            [In, Out][MarshalAs(UnmanagedType.LPArray)] char[] pDeviceFriendlyName,
             [In, Out] ref uint pcchDeviceFriendlyName);
 
         [PreserveSig]
         uint GetDeviceDescription(
             [In] string pszPnpDeviceID,
-            [In, Out] ref StringBuilder pDeviceDescription,
+            [In, Out][MarshalAs(UnmanagedType.LPArray)] char[] pDeviceDescription,
             [In, Out] ref uint pcchDeviceDescription);
 
         [PreserveSig]

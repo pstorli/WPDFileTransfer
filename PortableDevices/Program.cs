@@ -36,17 +36,33 @@ namespace PortableDevices
                     devices.Refresh();
                     foreach(var device in devices)
                     {
-                        Console.WriteLine($"Found Device {device.FriendlyName} with ID {device.DeviceId}");
+                        Console.WriteLine($"Found Device {device.Name} with ID {device.DeviceId}");
+                        Console.WriteLine($"\tManufacturer: {device.Manufacturer}");
+                        Console.WriteLine($"\tDescription: {device.Description}");
+
+                        device.Connect();
 
                         var rootfolder = device.Root;
 
                         Console.WriteLine($"Root Folder {rootfolder.Name}");
 
                         IPortableDeviceContent content = device.getContents();
-
-                        //GetFiles(ref content, rootfolder);
-
-
+                        // list all contents in the root - 1 level in 
+                        //see GetFiles method to enumerate everything in the device 
+                        PortableDeviceFolder.EnumerateContents(ref content, rootfolder);
+                        foreach (var fileItem in rootfolder.Files)
+                        {
+                            Console.WriteLine($"\t{fileItem.Name}");
+                            if (fileItem is PortableDeviceFolder childFolder)
+                            {
+                                PortableDeviceFolder.EnumerateContents(ref content, childFolder);
+                                foreach (var childFile in childFolder.Files)
+                                {
+                                    Console.WriteLine($"\t\t{childFile.Name}");
+                                }
+                            }
+                        }
+                        
                         // Copy folder to device from pc.
                         //error = copyToDevice (device);
                         //if (String.IsNullOrEmpty(error))
@@ -87,7 +103,7 @@ namespace PortableDevices
             PortableDeviceFolder.EnumerateContents(ref content, folder);
             foreach (var fileItem in folder.Files)
             {
-                Console.WriteLine($"\t {fileItem.Name}");
+                Console.WriteLine($"\t{fileItem.Name}");
                 if (fileItem is PortableDeviceFolder childFolder)
                 {
                     GetFiles(ref content, childFolder);
