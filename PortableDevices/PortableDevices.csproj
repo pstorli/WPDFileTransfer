@@ -39,6 +39,7 @@
     <Reference Include="System.Core" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="PortableDevices\PortabelDeviceManager.cs" />
     <Compile Include="PortableDevice.cs" />
     <Compile Include="PortableDeviceCollection.cs" />
     <Compile Include="PortableDeviceFile.cs" />
@@ -48,6 +49,10 @@
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
+    <None Include="ClassDiagram.cd" />
+    <None Include="README.md" />
+  </ItemGroup>
+  <ItemGroup>
     <COMReference Include="PortableDeviceApiLib">
       <Guid>{1F001332-1A57-4934-BE31-AFFC99F4EE0A}</Guid>
       <VersionMajor>1</VersionMajor>
@@ -55,7 +60,7 @@
       <Lcid>0</Lcid>
       <WrapperTool>tlbimp</WrapperTool>
       <Isolated>False</Isolated>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
     <COMReference Include="PortableDeviceTypesLib">
       <Guid>{2B00BA2F-E750-4BEB-9235-97142EDE1D3E}</Guid>
@@ -64,12 +69,8 @@
       <Lcid>0</Lcid>
       <WrapperTool>tlbimp</WrapperTool>
       <Isolated>False</Isolated>
-      <EmbedInteropTypes>False</EmbedInteropTypes>
+      <EmbedInteropTypes>True</EmbedInteropTypes>
     </COMReference>
-  </ItemGroup>
-  <ItemGroup>
-    <None Include="ClassDiagram.cd" />
-    <None Include="README.md" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

@@ -13,23 +13,29 @@ namespace PortableDevices
     public class PortableDevice
     {        
         public bool _isConnected;
-        public readonly PortableDeviceClass _device = new PortableDeviceClass();
+        public readonly IPortableDevice _device = new PortableDeviceApiLib.PortableDevice();
         public static string IS_PHONE_PLUGGED_IN = "Ensure that your Phone is plugged into this PC's usb port.";
-
+        PortableDeviceFolder _root = null;
         /**
          * Constructor.
          */
-        public PortableDevice (string deviceId)
+        public PortableDevice (string deviceId, string name, string manufacturer, string description)
         {
             this.DeviceId = deviceId;
+            this.Name = name;
+            this.Manufacturer = manufacturer;
+            this.Description = description;
         }
 
         /**
          * Device Id
          */
-        public string DeviceId { get; set; }
-        
-        internal PortableDeviceClass PortableDeviceClass
+        public string DeviceId { get; private set; }
+        public string Name { get; private set; }
+        public string Manufacturer { get; private set; }
+        public string Description { get; private set; }
+
+        internal IPortableDevice PortableDeviceClass
         {
             get
             {
@@ -44,8 +50,9 @@ namespace PortableDevices
         {
             if (this._isConnected) { return; }
 
-            var clientInfo = (IPortableDeviceValues)new PortableDeviceValuesClass();
+            var clientInfo = (IPortableDeviceValues)new PortableDeviceTypesLib.PortableDeviceValues();
             this._device.Open (this.DeviceId, clientInfo);
+            _root = new PortableDeviceFolder("DEVICE", "DEVICE");
             this._isConnected = true;
         }
 
@@ -90,51 +97,16 @@ namespace PortableDevices
         }
 
         /**
-         * The root folder on the device, also enumerate all files and folers on device.
+         * The root folder on the device, also enumerate all files and folders on device.
          */
-        public PortableDeviceFolder Root()
+        public PortableDeviceFolder Root
         {
-            PortableDeviceFolder root = new PortableDeviceFolder("DEVICE", "DEVICE");
-
-            IPortableDeviceContent content = getContents();
-
-            EnumerateContents(ref content, root);
-
-            return root;
-        }
-
-        /**
-         * Enumerate the contents of the device.
-         */
-        private static void EnumerateContents (ref IPortableDeviceContent content, PortableDeviceFolder parent)
-        {
-            // Get the properties of the object
-            IPortableDeviceProperties properties;
-            content.Properties(out properties);
-
-            // Enumerate the items contained by the current object
-            IEnumPortableDeviceObjectIDs objectIds;
-            content.EnumObjects(0, parent.Id, null, out objectIds);
-
-            uint fetched = 0;
-            do
+            get
             {
-                string objectId;
-
-                objectIds.Next (1, out objectId, ref fetched);
-                if (fetched > 0)
-                {
-                    var currentObject = WrapObject (properties, objectId);
-
-                    parent.Files.Add (currentObject);
-
-                    if (currentObject is PortableDeviceFolder)
-                    {
-                        EnumerateContents (ref content, (PortableDeviceFolder)currentObject);
-                    }                    
-                }
-            } while (fetched > 0);
+                return _root;
+            }
         }
+
 
         /**
          * Get required properties.
@@ -178,7 +150,7 @@ namespace PortableDevices
         {
             PortableDeviceApiLib.IPortableDeviceValues pValues =
                 (PortableDeviceApiLib.IPortableDeviceValues)
-                    new PortableDeviceTypesLib.PortableDeviceValuesClass();
+                    new PortableDeviceTypesLib.PortableDeviceValues();
 
             var WPD_OBJECT_ID = new _tagpropertykey();
             WPD_OBJECT_ID.fmtid =
@@ -188,49 +160,6 @@ namespace PortableDevices
             pValues.SetStringValue(ref WPD_OBJECT_ID, value);
 
             pValues.GetValue(ref WPD_OBJECT_ID, out propvarValue);
-        }
-
-        /**
-         * Wrap Object
-         */
-        private static PortableDeviceObject WrapObject(IPortableDeviceProperties properties, string objectId)
-        {
-            IPortableDeviceKeyCollection keys;
-            properties.GetSupportedProperties(objectId, out keys);
-
-            IPortableDeviceValues values;
-            properties.GetValues(objectId, keys, out values);
-
-            // Get the name of the object
-            string name;
-            var property = new _tagpropertykey();
-            property.fmtid = new Guid(0xEF6B490D, 0x5CD8, 0x437A, 0xAF, 0xFC, 0xDA, 0x8B, 0x60, 0xEE, 0x4A, 0x3C);
-            property.pid = 4;
-            values.GetStringValue(property, out name);
-
-            // Get the type of the object
-            Guid contentType;
-            property = new _tagpropertykey();
-            property.fmtid = new Guid(0xEF6B490D, 0x5CD8, 0x437A, 0xAF, 0xFC, 0xDA, 0x8B, 0x60, 0xEE, 0x4A, 0x3C);
-            property.pid = 7;
-            values.GetGuidValue(property, out contentType);
-
-            var folderType = new Guid(0x27E2E392, 0xA111, 0x48E0, 0xAB, 0x0C, 0xE1, 0x77, 0x05, 0xA0, 0x5F, 0x85);
-            var functionalType = new Guid(0x99ED0160, 0x17FF, 0x4C44, 0x9D, 0x98, 0x1D, 0x7A, 0x6F, 0x94, 0x19, 0x21);
-
-            if (contentType == folderType || contentType == functionalType)
-            {
-                return new PortableDeviceFolder(objectId, name);
-            }
-
-            // Get the size of the object
-            long objSiz;
-            property = new _tagpropertykey();
-            property.fmtid = new Guid("EF6B490D-5CD8-437A-AFFC-DA8B60EE4A3C");
-            property.pid = 11; //WPD_OBJECT_SIZE;
-            values.GetSignedLargeIntegerValue(property, out objSiz);
-
-            return new PortableDeviceFile(objectId, name, objSiz);
         }
 
         /**
@@ -299,7 +228,7 @@ namespace PortableDevices
 
                 Console.WriteLine(FriendlyName);
 
-                var folder = Root();
+                var folder = Root;
                 foreach (var item in folder.Files)
                 {
                     item.DisplayObject();
@@ -363,7 +292,7 @@ namespace PortableDevices
                 // make sure that we are not holding on to a file.
                 DisconnectConnect();
 
-                // Make sure that the target dir exists.
+                // Make sure that the target directory exists.
                 System.IO.Directory.CreateDirectory(saveToPath);
 
                 IPortableDeviceContent content = getContents();
@@ -385,7 +314,7 @@ namespace PortableDevices
                 // var fileName = Path.GetFileName(file.Id);
                 targetStream = new FileStream(Path.Combine(saveToPath, fileName), FileMode.Create, FileAccess.Write);
 
-                // Getthe total size.
+                // Get the total size.
                 long length = file.size;
                 long written = 0;
                 long lPCt = 0;
@@ -421,7 +350,7 @@ namespace PortableDevices
         }
 
         /**
-         * Copy To Phone
+         * Copy To portable device
          */
         public void TransferContentToDevice (PortableDeviceFolder parentFolder, string filePath)
         {

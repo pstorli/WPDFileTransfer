@@ -3,9 +3,9 @@ Copy files to/from your pc/phone using c#
 
 Windows Portable Device file transfer
 
-I first want to give Christophe Geer a really big hand. He is the only person that I have found that had any example of transfering data to a phone using WPD (Windows Portable device) in c#.
+I first want to give Christophe Geer a really big hand. He is the only person that I have found that had any example of transferring data to a phone using WPD (Windows Portable device) in c#.
 
-There were only a few bugs that I had to fix and only a few importnat features that were missing that I added.
+There were only a few bugs that I had to fix and only a few important features that were missing that I added.
 
 The result are a set of PortableDevice files that can be used to do most of the needed CRUD operations.
 
@@ -24,9 +24,9 @@ https://cgeers.wordpress.com/2012/04/17/wpd-transfer-content-to-a-device/
 The file Program.cs does a simple task of either copying a folder to/from the phone from your pc
 or  copying a file to/from the phone from your pc.
 
-See the top of theat file for instructions.
+See the top of that file for instructions.
 
-The fils that you may want to use in your project to copy to/from a phone are:
+The files that you may want to use in your project to copy to/from a phone are:
 
    PortableDevice.cs
    PortableDeviceCollection.cs

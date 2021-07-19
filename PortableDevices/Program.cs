@@ -1,4 +1,5 @@
-﻿using System;
+﻿using PortableDeviceApiLib;
+using System;
 using System.Linq;
 
 /**  
@@ -25,42 +26,77 @@ namespace PortableDevices
         // https://cgeers.wordpress.com/2012/04/17/wpd-transfer-content-to-a-device/
         static void Main()
         {
-            String  error       = "";
+            string error = string.Empty;
+            PortableDeviceCollection devices = null;
             try
             {
-                var devices = new PortableDeviceCollection();
-                if (null == devices)
+                devices = new PortableDeviceCollection();
+                if (null != devices)
                 {
-                    error = "No devices found!";
-                }
-                else
-                {
-                    devices.Refresh();
-
-                    var device = devices.First();
-                    if (null == device)
+                    char cmdCharacter = ' ';
+                    do
                     {
-                        error = "No device found!";
-                    }
-                    else
-                    {                        
-                        // Copy folder to device from pc.
-                        error = copyToDevice (device);
-                        if (String.IsNullOrEmpty(error))
+                        devices.Refresh();
+                        Console.Clear();
+                        Console.WriteLine($"Found {devices.Count} Device(s)");
+                        Console.WriteLine($"-------------------------------------");
+                        foreach (var device in devices)
                         {
-                            error = @"Copied folder C:\Test to Phone\Android\data\test";
-                        }
-                        Console.WriteLine(error);
+                            Console.WriteLine();
+                            Console.WriteLine($"Found Device {device.Name} with ID {device.DeviceId}");
+                            Console.WriteLine($"\tManufacturer: {device.Manufacturer}");
+                            Console.WriteLine($"\tDescription: {device.Description}");
 
-                        // Copy folder back to pc from device.
-                        error = copyFromDevice(device);
-                        if (String.IsNullOrEmpty(error))
+                            device.Connect();
+
+                            var rootfolder = device.Root;
+
+                            Console.WriteLine($"Root Folder {rootfolder.Name}");
+
+                            IPortableDeviceContent content = device.getContents();
+                            // list all contents in the root - 1 level in 
+                            //see GetFiles method to enumerate everything in the device 
+                            PortableDeviceFolder.EnumerateContents(ref content, rootfolder);
+                            foreach (var fileItem in rootfolder.Files)
+                            {
+                                Console.WriteLine($"\t{fileItem.Name}");
+                                if (fileItem is PortableDeviceFolder childFolder)
+                                {
+                                    PortableDeviceFolder.EnumerateContents(ref content, childFolder);
+                                    foreach (var childFile in childFolder.Files)
+                                    {
+                                        Console.WriteLine($"\t\t{childFile.Name}");
+                                    }
+                                }
+                            }
+
+                            // Copy folder to device from pc.
+                            //error = copyToDevice (device);
+                            //if (String.IsNullOrEmpty(error))
+                            //{
+                            //    error = @"Copied folder C:\Test to Phone\Android\data\test";
+                            //}
+                            //Console.WriteLine(error);
+
+                            //// Copy folder back to pc from device.
+                            //error = copyFromDevice(device);
+                            //if (String.IsNullOrEmpty(error))
+                            //{
+                            //    error = @"Copied folder Phone\Android\data\test to c:\Test\CopiedBackfromPhone";
+                            //}
+
+                            device.Disconnect();
+                        }
+                        Console.WriteLine($"-------------------------------------");
+                        Console.WriteLine("Press r to refresh");
+                        Console.WriteLine("Press x key to exit");
+                        cmdCharacter = Console.ReadKey().KeyChar;
+                        if (cmdCharacter == 'x')
                         {
-                            error = @"Copied folder Phone\Android\data\test to c:\Test\CopiedBackfromPhone";
+                            break;
                         }
+                    } while ('r' == cmdCharacter);
 
-                        device.Disconnect();
-                    }
                 }
             }
             catch (Exception ex)
@@ -69,7 +105,28 @@ namespace PortableDevices
             }
             finally
             {
-                Console.WriteLine(error);
+                if (null != devices)
+                {
+                    devices.Dispose();
+                }
+                if (!string.IsNullOrWhiteSpace(error))
+                {
+                    Console.WriteLine(error);
+                    Console.ReadKey();
+                }
+            }
+        }
+
+        private static void GetFiles(ref IPortableDeviceContent content, PortableDeviceFolder folder)
+        {
+            PortableDeviceFolder.EnumerateContents(ref content, folder);
+            foreach (var fileItem in folder.Files)
+            {
+                Console.WriteLine($"\t{fileItem.Name}");
+                if (fileItem is PortableDeviceFolder childFolder)
+                {
+                    GetFiles(ref content, childFolder);
+                }
             }
         }
 
@@ -82,14 +139,14 @@ namespace PortableDevices
 
             try
             {
-                // Try to find the data dir on the phone.
+                // Try to find the data folder on the phone.
                 String               phoneDir = @"Phone\Android\data";
-                PortableDeviceFolder root     = device.Root();
+                PortableDeviceFolder root     = device.Root;
                 PortableDeviceFolder result   = root.FindDir (phoneDir);
                 if (null == result)
                 {
                     // Perhaps it was a tablet instead of a phone?
-                    result = device.Root().FindDir(@"Tablet\Android\data");
+                    result = device.Root.FindDir(@"Tablet\Android\data");
                     phoneDir = @"Tablet\Android\data";
                 }
 
@@ -100,7 +157,7 @@ namespace PortableDevices
                 }
                 else
                 {
-                    // Create remote test dir.
+                    // Create remote test folder.
                     result = result.CreateDir (device, "test");
 
                     string pcDir = @"C:\Test\";
@@ -135,7 +192,7 @@ namespace PortableDevices
 
             try
             {
-                PortableDeviceFolder root   = device.Root();
+                PortableDeviceFolder root   = device.Root;
                 PortableDeviceObject result = root.FindDir (@"Phone\Android\data\test");
                 if (null == result)
                 {
