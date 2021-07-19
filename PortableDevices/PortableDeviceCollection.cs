@@ -1,5 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
+using System.Linq;
 using System.Runtime.InteropServices;
 using System.Text;
 using PortableDeviceApiLib;
@@ -58,16 +60,27 @@ namespace PortableDevices
                 // Retrieve the device id for each connected device
                 IntPtr[] ptr = new IntPtr[count];
                 this._deviceManager.GetDevices(ptr, ref count);
-
+                string[] devicesFound = new string[count];
                 for (uint i = 0; i < count; i++)
                 {
                     string deviceId = Marshal.PtrToStringUni(ptr[i]);
+                    devicesFound[i] = deviceId;
                     string manufacturer = GetFieldValue(_deviceManager.GetDeviceManufacturer, deviceId);
                     string description = GetFieldValue(_deviceManager.GetDeviceDescription, deviceId);
                     string friendlyname = GetFieldValue(_deviceManager.GetDeviceFriendlyName, deviceId);
-
-                    Add(new PortableDevice(deviceId, friendlyname, manufacturer, description));
+                    // check if the device is already in the collection before adding it (again)
+                    if (!this.Any(d => d.DeviceId == deviceId))
+                    {
+                        Add(new PortableDevice(deviceId, friendlyname, manufacturer, description));
+                    }
                 }
+                //get a collection of devices removed 
+                var removedDevices = this.Where(d => !devicesFound.Contains(d.DeviceId)).ToArray();
+                foreach(var removedDevice in removedDevices)
+                {
+                    Remove(removedDevice);
+                }
+                // free the memory allocated for the device ID strings
                 if (ptr != null)
                 {
                     for (uint i = 0; i < count; i++)
